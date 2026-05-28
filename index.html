@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dr Jongi Klaas | Author & Historian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dark: #8B6914;
+      --cream: #F5F0E8;
+      --parchment: #EDE4D0;
+      --ink: #1A1208;
+      --ink-light: #2D2210;
+      --charcoal: #3A3228;
+      --warm-gray: #7A6E60;
+      --accent-red: #8B1A1A;
+      --section-bg: #F9F5EE;
+    }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Lato', sans-serif; background: var(--ink); color: var(--cream); cursor: none; overflow-x: hidden; }
+
+    /* CURSOR */
+    #cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; }
+    #cursor-dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; transform: translate(-50%,-50%); position: absolute; }
+    #cursor-ring { position: fixed; top: 0; left: 0; width: 36px; height: 36px; border: 1.5px solid var(--gold); border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 9998; transition: width .2s, height .2s; }
+    a:hover ~ #cursor-ring, button:hover ~ #cursor-ring { width: 54px; height: 54px; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; height: 80px; transition: background .4s, height .4s, box-shadow .4s; }
+    nav.scrolled { background: rgba(26,18,8,.96); height: 64px; box-shadow: 0 2px 40px rgba(0,0,0,.6); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+    .nav-logo { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: .12em; color: var(--gold); text-decoration: none; line-height: 1.25; }
+    .nav-logo .logo-jongi { color: var(--cream); }
+    .nav-logo .logo-sub { display: block; font-size: .58rem; letter-spacing: .28em; color: var(--cream); opacity: .6; margin-top: 2px; text-transform: uppercase; }
+    .nav-links { display: flex; gap: 3rem; list-style: none; }
+    .nav-links a { font-family: 'Cinzel', serif; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--cream); text-decoration: none; position: relative; transition: color .3s; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: width .35s cubic-bezier(.16,1,.3,1); }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 26px; height: 1.5px; background: var(--gold); }
+
+    /* HERO */
+    #home { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .hero-bg-layer { position: absolute; inset: -20%; will-change: transform; }
+    .hero-bg-img { position: absolute; inset: 0; background: url('hero.jpeg') center/cover no-repeat; }
+    .hero-bg-img-2 { background-image: url('hero.jpeg'); }
+    .hero-bg-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(10,6,2,.82) 0%, rgba(26,18,8,.75) 40%, rgba(20,10,2,.88) 100%); }
+    .hero-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg,rgba(201,168,76,.04) 0,rgba(201,168,76,.04) 1px,transparent 0,transparent 50%),repeating-linear-gradient(-45deg,rgba(201,168,76,.04) 0,rgba(201,168,76,.04) 1px,transparent 0,transparent 50%); background-size: 60px 60px; }
+    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 860px; padding: 0 2rem; }
+    .hero-eyebrow { font-family: 'Cinzel', serif; font-size: .68rem; letter-spacing: .4em; color: var(--gold); text-transform: uppercase; margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp .8s .3s forwards; }
+    .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem,8vw,7.5rem); font-weight: 300; line-height: 1.05; color: var(--cream); margin-bottom: 1.5rem; opacity: 0; transform: translateY(30px); animation: fadeUp .9s .5s forwards; }
+    .hero-title em { font-style: italic; color: var(--gold-light); }
+    .hero-subtitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(1rem,2.2vw,1.4rem); font-weight: 300; font-style: italic; color: var(--warm-gray); margin-bottom: 3.5rem; letter-spacing: .05em; opacity: 0; transform: translateY(20px); animation: fadeUp .9s .7s forwards; }
+    .hero-cta { display: inline-flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; opacity: 0; animation: fadeUp .9s .9s forwards; }
+    .btn-primary { font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); background: var(--gold); border: none; padding: 1rem 2.5rem; cursor: pointer; text-decoration: none; transition: background .3s, transform .3s; display: inline-block; }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-outline { font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); background: transparent; border: 1px solid var(--gold); padding: 1rem 2.5rem; cursor: pointer; text-decoration: none; transition: background .3s, color .3s, transform .3s; display: inline-block; }
+    .btn-outline:hover { background: var(--gold); color: var(--ink); transform: translateY(-2px); }
+    .hero-scroll-hint { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: .6rem; opacity: 0; animation: fadeUp .9s 1.3s forwards; }
+    .hero-scroll-hint span { font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .3em; color: var(--warm-gray); text-transform: uppercase; }
+    .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 2s infinite; }
+
+    /* SHARED */
+    section { position: relative; }
+    .section-label { font-family: 'Cinzel', serif; font-size: .65rem; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem,5vw,4.5rem); font-weight: 300; line-height: 1.1; }
+    .divider-gold { width: 60px; height: 1px; background: var(--gold); margin: 2rem 0; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ABOUT */
+    #about { background: var(--section-bg); color: var(--ink); overflow: hidden; }
+    .about-parallax-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 100% 50%, rgba(201,168,76,.08) 0%, transparent 60%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23C9A84C' opacity='.12'/%3E%3C/svg%3E"); background-size: cover, 60px 60px; }
+    .about-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; max-width: 1200px; margin: 0 auto; padding: 10rem 5vw; align-items: center; }
+    .about-image-wrap { position: relative; }
+    .about-image-frame { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+    .about-image-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-image-frame::before { content: ''; position: absolute; top: -16px; left: -16px; width: calc(100% + 32px); height: calc(100% + 32px); border: 1px solid var(--gold); z-index: -1; }
+    .about-image-frame::after { content: ''; position: absolute; bottom: -8px; right: -8px; width: 80px; height: 80px; background: var(--accent-red); z-index: -2; }
+    /* second portrait thumbnail below */
+    .about-thumb { margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .about-thumb-item { display: grid; gap: 0.75rem; }
+    .about-thumb-item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: grayscale(20%); transition: filter .4s; display: block; }
+    .about-thumb-item:hover img { filter: grayscale(0); }
+    .about-thumb-item figcaption { font-family: 'Lato', sans-serif; font-size: .82rem; color: var(--charcoal); line-height: 1.4; text-align: center; }
+    .about-thumb img.focus-face { object-position: top center; }
+    .about-text .section-label { color: var(--gold-dark); }
+    .about-text .section-title { color: var(--ink); }
+    .about-body { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; line-height: 1.9; color: var(--charcoal); margin-top: 1.5rem; }
+    .about-body p { margin-bottom: 1.4rem; }
+    .about-credentials { margin-top: 2.5rem; display: flex; flex-direction: column; gap: .8rem; }
+    .credential { display: flex; align-items: flex-start; gap: 1rem; }
+    .credential-dot { width: 8px; height: 8px; min-width: 8px; background: var(--gold); margin-top: .4rem; }
+    .credential-text { font-family: 'Lato', sans-serif; font-size: .85rem; color: var(--charcoal); letter-spacing: .02em; }
+    .credential-text strong { display: block; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: .15rem; }
+    .about-quote { margin-top: 3rem; border-left: 3px solid var(--gold); padding-left: 1.8rem; }
+    .about-quote blockquote { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-style: italic; color: var(--ink); line-height: 1.7; }
+    .about-quote cite { display: block; margin-top: .8rem; font-family: 'Lato', sans-serif; font-size: .75rem; letter-spacing: .1em; color: var(--warm-gray); text-transform: uppercase; font-style: normal; }
+
+    /* IMAGE STRIP between sections */
+    .img-strip { display: grid; grid-template-columns: repeat(4,1fr); height: 260px; overflow: hidden; }
+    .img-strip-item { overflow: hidden; position: relative; }
+    .img-strip-item figure { margin: 0; position: relative; height: 100%; }
+    .img-strip-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16,1,.3,1), filter .4s; filter: brightness(.75) saturate(.85); }
+    .img-strip-item img.strip-image-face { object-position: center top; }
+    .img-strip-item:hover img { transform: scale(1.08); filter: brightness(.9) saturate(1); }
+    .img-strip-item figcaption { position: absolute; left: 0; right: 0; bottom: 0; font-family: 'Cinzel', serif; font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--cream); background: rgba(10,6,2,.78); padding: .9rem 1rem; z-index: 1; }
+
+    /* BOOKS */
+    #books { background: var(--ink); padding: 10rem 5vw; overflow: hidden; }
+    .books-parallax-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 0% 100%,rgba(139,26,26,.2) 0%,transparent 50%),radial-gradient(ellipse at 100% 0%,rgba(201,168,76,.1) 0%,transparent 50%); }
+    .books-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
+    .books-header { text-align: center; margin-bottom: 7rem; }
+    .books-header .section-title { color: var(--cream); }
+    .books-header .divider-gold { margin: 2rem auto; }
+    .books-header p { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: var(--warm-gray); max-width: 600px; margin: 0 auto; }
+    .books-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(340px,1fr)); gap: 4rem; }
+    .book-card { position: relative; background: linear-gradient(145deg,#201608,#140E04); border: 1px solid rgba(201,168,76,.15); transition: transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s; }
+    .book-card:hover { transform: translateY(-12px); box-shadow: 0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(201,168,76,.3); }
+    .book-cover { aspect-ratio: 3/4; position: relative; overflow: hidden; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.6) saturate(.7); transition: filter .5s; }
+    .book-card:hover .book-cover img { filter: brightness(.75) saturate(.9); }
+    .book-cover-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,5,0,.95) 0%, rgba(10,5,0,.3) 60%, transparent 100%); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 2rem; text-align: center; }
+    .book-cover-spine { position: absolute; top: 0; left: 0; bottom: 0; width: 6px; background: var(--gold); z-index: 2; }
+    .spine-accent-red { background: var(--accent-red); }
+    .spine-warm-gray { background: var(--warm-gray); }
+    .badge-accent-red { background: var(--accent-red); color: var(--cream); }
+    .badge-charcoal { background: var(--charcoal); color: var(--warm-gray); }
+    .book-card--faded { opacity: .75; }
+    .cover-filter-muted { filter:brightness(.4) saturate(.4) grayscale(.5); }
+    .muted-opacity-50 { opacity:.5; }
+    .muted-opacity-60 { opacity:.6; }
+    .muted-opacity-40 { opacity:.4; }
+    .gallery-item--tall-min { min-height:300px; }
+    .gallery-item--h200 { height:200px; }
+    .center-cta-wrapper { margin-top:4rem; text-align:center; }
+    .cta-text { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:var(--warm-gray); margin-bottom:2rem; }
+    .footer-muted { opacity:.5; }
+    .section-title em.gold-dark { font-style:italic; color:var(--gold-dark); }
+    .text-warm-gray { color: var(--warm-gray); }
+    .book-year { font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .3em; color: var(--gold); margin-bottom: .8rem; }
+    .book-cover-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--cream); line-height: 1.2; margin-bottom: .5rem; }
+    .book-cover-author { font-family: 'Cormorant Garamond', serif; font-size: .85rem; font-style: italic; color: var(--gold-light); letter-spacing: .05em; }
+    .book-info { padding: 2rem 2.2rem 2.5rem; }
+    .book-badge { display: inline-block; font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); background: var(--gold); padding: .3rem .8rem; margin-bottom: 1.2rem; }
+    .book-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--cream); margin-bottom: .8rem; line-height: 1.2; }
+    .book-info p { font-family: 'Lato', sans-serif; font-size: .87rem; line-height: 1.8; color: var(--warm-gray); margin-bottom: 1.8rem; }
+    .book-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .book-link { font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,.3); padding-bottom: 2px; transition: color .3s, border-color .3s; }
+    .book-link:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+    /* GALLERY GRID */
+    .photo-gallery { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto; gap: 10px; max-width: 1200px; margin: 6rem auto 0; }
+    .gallery-item { overflow: hidden; position: relative; cursor: zoom-in; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.16,1,.3,1), filter .4s; filter: brightness(.8) saturate(.8); }
+    .gallery-item:hover img { transform: scale(1.07); filter: brightness(1) saturate(1); }
+    .gallery-item.tall { grid-row: span 2; }
+    .gallery-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem 1.5rem; background: linear-gradient(transparent, rgba(0,0,0,.75)); font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; transform: translateY(100%); transition: transform .3s; }
+    .gallery-item:hover .gallery-caption { transform: translateY(0); }
+
+    /* EVENTS */
+    #events { background: var(--section-bg); color: var(--ink); padding: 10rem 5vw; overflow: hidden; }
+    .events-parallax-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08) 0%,transparent 60%); }
+    .events-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+    .events-header { margin-bottom: 6rem; }
+    .events-header .section-title { color: var(--ink); }
+    .events-intro { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: var(--warm-gray); margin-top: 1rem; max-width: 560px; }
+    /* Event image banner */
+    .events-img-banner { width: 100%; height: 320px; overflow: hidden; margin-bottom: 5rem; position: relative; border-left: 4px solid var(--gold); }
+    .events-img-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.5) saturate(.7); }
+    .events-img-banner-text { position: absolute; bottom: 2rem; left: 2rem; }
+    .events-img-banner-text p { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-style: italic; font-weight: 300; color: var(--cream); max-width: 500px; line-height: 1.4; }
+    .events-list { display: flex; flex-direction: column; gap: 1px; }
+    .event-item { display: grid; grid-template-columns: 120px 1fr auto; gap: 2rem; align-items: start; padding: 2.5rem 0; border-top: 1px solid rgba(201,168,76,.2); transition: background .3s, padding .3s; cursor: default; }
+    .event-item:last-child { border-bottom: 1px solid rgba(201,168,76,.2); }
+    .event-item:hover { background: rgba(201,168,76,.03); padding-left: 1rem; padding-right: 1rem; margin: 0 -1rem; }
+    .event-date-block { text-align: center; }
+    .event-date-day { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: var(--gold-dark); line-height: 1; }
+    .event-date-month { font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--warm-gray); margin-top: .2rem; }
+    .event-date-year { font-family: 'Lato', sans-serif; font-size: .7rem; color: var(--warm-gray); opacity: .6; }
+    .event-type { font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .25em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: .5rem; }
+    .event-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--ink); margin-bottom: .4rem; line-height: 1.2; }
+    .event-meta { font-family: 'Lato', sans-serif; font-size: .82rem; color: var(--warm-gray); }
+    .event-status { display: inline-block; font-family: 'Cinzel', serif; font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; padding: .35rem 1rem; align-self: center; }
+    .status-upcoming { color: var(--ink); background: var(--gold); }
+    .status-past { color: var(--warm-gray); border: 1px solid rgba(201,168,76,.3); }
+
+    /* CONTACT */
+    #contact { background: linear-gradient(160deg,#0D0A04 0%,#1A1208 60%,#0D0804 100%); padding: 10rem 5vw 8rem; overflow: hidden; }
+    .contact-parallax-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.07) 0%,transparent 55%),radial-gradient(ellipse at 80% 80%,rgba(139,26,26,.12) 0%,transparent 50%); }
+    .contact-inner { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+    .contact-header { text-align: center; margin-bottom: 6rem; }
+    .contact-header .section-title { color: var(--cream); }
+    .contact-header .divider-gold { margin: 2rem auto; }
+    .contact-header p { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: var(--warm-gray); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+    .form-group { margin-bottom: 2rem; }
+    .form-group label { display: block; font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: .7rem; }
+    .form-group input,.form-group textarea,.form-group select { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(201,168,76,.3); padding: .8rem 0; font-family: 'Lato', sans-serif; font-size: .9rem; color: var(--cream); outline: none; transition: border-color .3s; appearance: none; }
+    .form-group input:focus,.form-group textarea:focus,.form-group select:focus { border-color: var(--gold); }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-group select option { background: var(--ink); }
+    .form-group input::placeholder,.form-group textarea::placeholder { color: rgba(255,255,255,.2); }
+    .form-submit { font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink); background: var(--gold); border: none; padding: 1.1rem 3rem; cursor: pointer; width: 100%; transition: background .3s, transform .3s; margin-top: .5rem; }
+    .form-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .form-success { display: none; text-align: center; padding: 2rem; border: 1px solid rgba(201,168,76,.3); }
+    .form-success p { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-style: italic; color: var(--gold-light); }
+    .contact-info-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--cream); margin-bottom: 2rem; line-height: 1.3; }
+    .contact-info-body { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; color: var(--warm-gray); line-height: 1.9; margin-bottom: 2rem; }
+    /* Contact image */
+    .contact-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; margin-bottom: 2rem; border-left: 3px solid var(--gold); }
+    .contact-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.6) saturate(.7); }
+    .contact-details { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
+    .contact-detail { display: flex; align-items: flex-start; gap: 1.2rem; }
+    .contact-detail-icon { width: 36px; height: 36px; min-width: 36px; border: 1px solid rgba(201,168,76,.3); display: flex; align-items: center; justify-content: center; }
+    .contact-detail-icon svg { width: 16px; fill: var(--gold); }
+    .contact-detail-text { font-family: 'Lato', sans-serif; font-size: .87rem; color: var(--warm-gray); line-height: 1.7; }
+    .contact-detail-text strong { display: block; font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); margin-bottom: .2rem; }
+    .social-links { display: flex; gap: 1rem; }
+    .social-link { width: 40px; height: 40px; border: 1px solid rgba(201,168,76,.3); display: flex; align-items: center; justify-content: center; color: var(--warm-gray); text-decoration: none; font-family: 'Cinzel', serif; font-size: .6rem; letter-spacing: .05em; transition: background .3s, color .3s, border-color .3s; }
+    .social-link:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+
+    /* PARALLAX DIVIDER */
+    .parallax-divider { height: 340px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .parallax-divider-bg { position: absolute; inset: -18%; will-change: transform; }
+    .parallax-divider-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+    .parallax-divider-bg::after { content: ''; position: absolute; inset: 0; background: rgba(12,8,2,.72); }
+    .parallax-divider-text { position: relative; z-index: 1; text-align: center; }
+    .parallax-divider-text blockquote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem,3vw,2.2rem); font-style: italic; font-weight: 300; color: var(--cream); max-width: 800px; padding: 0 4rem; line-height: 1.6; }
+    .parallax-divider-text blockquote::before { content: '\201C'; font-size: 4rem; color: var(--gold); line-height: 0; vertical-align: -.5em; margin-right: .3em; }
+    .parallax-divider-text cite { display: block; margin-top: 1.2rem; font-family: 'Cinzel', serif; font-size: .65rem; letter-spacing: .25em; color: var(--gold); text-transform: uppercase; font-style: normal; }
+
+    /* FOOTER */
+    footer { background: #080502; padding: 3rem 5vw; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-top: 1px solid rgba(201,168,76,.1); }
+    footer p { font-family: 'Lato', sans-serif; font-size: .75rem; color: var(--warm-gray); letter-spacing: .05em; margin: 0; }
+    .footer-logo { font-family: 'Cinzel', serif; font-size: .9rem; letter-spacing: .15em; color: var(--gold); }
+    .footer-credit { display: flex; align-items: center; gap: .4rem; }
+    .footer-bottom { width: 100%; text-align: center; margin-top: 1rem; }
+    .footer-copy { margin-bottom: .4rem; }
+    .footer-bottom-credit a { color: var(--gold); text-decoration: none; border-bottom: 1px solid rgba(201,168,76,.4); transition: color .3s, border-color .3s; }
+    .footer-bottom-credit a:hover { color: var(--cream); border-color: var(--gold); }
+
+    /* MOBILE MENU */
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 999; background: rgba(10,7,2,.97); flex-direction: column; align-items: center; justify-content: center; gap: 3rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Cinzel', serif; font-size: 1.5rem; letter-spacing: .2em; color: var(--cream); text-decoration: none; transition: color .3s; }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close { position: absolute; top: 2rem; right: 5vw; background: none; border: none; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    @keyframes scrollPulse { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:.4;transform:scaleY(.6)} }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .about-inner { grid-template-columns:1fr; gap:4rem; padding:6rem 5vw; }
+      .about-image-wrap { max-width:400px; }
+      .contact-grid { grid-template-columns:1fr; gap:4rem; }
+      .event-item { grid-template-columns:80px 1fr; }
+      .event-status { display:none; }
+      .img-strip { grid-template-columns:repeat(2,1fr); height:200px; }
+      .photo-gallery { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:700px) {
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+      .books-grid { grid-template-columns:1fr; }
+      .event-item { grid-template-columns:70px 1fr; gap:1rem; }
+      .img-strip { grid-template-columns:1fr 1fr; height:160px; }
+      .photo-gallery { grid-template-columns:1fr 1fr; }
+      .about-thumb { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"><div id="cursor-dot"></div></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">
+    Dr <span class="logo-jongi">Jongi</span> Klaas
+    <span class="logo-sub">Author · Historian · Explorer</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#books">Books</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="menuBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="menuClose">✕</button>
+  <a href="#home" class="mobile-link">Home</a>
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#books" class="mobile-link">Books</a>
+  <a href="#events" class="mobile-link">Events</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<section id="home">
+  <div class="hero-bg-layer" id="heroBg">
+    <!-- Local hero image from DR JJ KLAAS folder -->
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg-overlay"></div>
+  </div>
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Historian · Sociologist · Author · Former International Diplomat</p>
+    <h1 class="hero-title">Dr Jongi<br><em>Joseph Klaas</em></h1>
+    <p class="hero-subtitle">A Cambridge PhD scholar reshaping South African history, heritage, and commemoration.</p>
+    <div class="hero-cta">
+      <a href="#books" class="btn-primary">Explore the Books</a>
+      <a href="#about" class="btn-outline">About the Author</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══════════════════ ABOUT ══════════════════ -->
+<section id="about">
+  <div class="about-parallax-bg"></div>
+  <div class="about-inner">
+
+    <div class="about-image-wrap reveal">
+      <div class="about-image-frame">
+        <!-- IMAGE 2: Local portrait image for Dr JJ Klaas -->
+        <img src="WhatsApp Image 2026-03-18 at 09.07.29.jpeg" alt="Dr JJ Klaas portrait" />
+      </div>
+      <div class="about-thumb">
+        <!-- IMAGE 3: Local portrait image -->
+        <figure class="about-thumb-item">
+          <img src="about-image-3.jpeg" alt="Dr JJ Klaas" class="focus-face" />
+          <figcaption>At Arch Ocean View being developed as a heritage center of the Cape Wars</figcaption>
+        </figure>
+        <!-- IMAGE 4: Local portrait image -->
+        <figure class="about-thumb-item">
+          <img src="about-image-4.jpeg" alt="Dr JJ Klaas" />
+          <figcaption>Diplomat at the United Nations Security Council in 2011-2012</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="about-text">
+      <p class="section-label reveal">The Author</p>
+      <h2 class="section-title reveal">A Shepherd Boy<br>Who Walked to<br><em class="gold-dark">Cambridge</em></h2>
+      <div class="divider-gold reveal"></div>
+      <div class="about-body reveal">
+        <p>Dr JJ Klaas is a Historian, Sociologist, Author, and former International Diplomat with a PhD from the University of Cambridge in the United Kingdom. His work is dedicated to reclaiming South African and African history from an indigenous perspective.</p>
+        <p>In 2015, he published his first book, <strong>Memoirs of Relentless Pursuit</strong>. In 2023, he directed the first documentary of <strong>Nkosi Maqoma</strong>, and in the same year he published the peer-reviewed book <strong>Triangle of One Hundred Years Wars</strong>, regarded as a groundbreaking contribution to the decolonisation of South African history.</p>
+        <p>In 2024, he organised the commemoration of King Sandile, who fought in three wars of resistance against colonialism. In 2025, he successfully hosted the 75-year commemoration of HH Majiza Secondary School in Keiskammahoek. He is currently chairing the restoration of the Mgwali Heritage Mission, built by Reverend Tiyo Soga in 1857, and during the historic King Hintsa commemoration on 12 May 2026 he presented the significance of South Africa’s longest African wars of resistance.</p>
+      </div>
+      <div class="about-credentials reveal">
+        <div class="credential"><div class="credential-dot"></div><div class="credential-text"><strong>University of Fort Hare, South Africa</strong>Bachelor of Pedagogics</div></div>
+        <div class="credential"><div class="credential-dot"></div><div class="credential-text"><strong>University of Oklahoma, USA</strong>Master's Degree · Fulbright Scholar</div></div>
+        <div class="credential"><div class="credential-dot"></div><div class="credential-text"><strong>University of Cambridge, United Kingdom</strong>MPhil &amp; PhD in Sociology · Mandela Magdalene Scholar</div></div>
+        <div class="credential"><div class="credential-dot"></div><div class="credential-text"><strong>Rhodes University, South Africa</strong>Former Faculty Member</div></div>
+      </div>
+      <div class="about-quote reveal">
+        <blockquote>"Jongi Klaas redefines the telling of history — his stories have a soul, they live in you."</blockquote>
+        <cite>— Professor Ncedile Saule</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE STRIP 1 (4 atmospheric photos) -->
+<div class="img-strip">
+  <div class="img-strip-item">
+    <!-- IMAGE 5: Eastern Cape rolling hills -->
+    <figure>
+      <img src="strip-image-5.jpeg" alt="Eastern Cape hills" />
+      <figcaption>In Deliwe/Cthcart on of the battlefields of War of Ngcayechibi, with Professor Malizo and Mr Zola Nazo</figcaption>
+    </figure>
+  </div>
+  <div class="img-strip-item">
+    <!-- IMAGE 6: Old parchment / manuscripts -->
+    <figure>
+      <img src="WhatsApp Image 2026-03-18 at 09.02.36.jpeg" alt="History manuscripts" class="strip-image-face" />
+      <figcaption>Exploring Mzimvubu River in Port St Johns</figcaption>
+    </figure>
+  </div>
+  <div class="img-strip-item">
+    <!-- IMAGE 7: African savanna sunset -->
+    <figure>
+      <img src="strip-image-7.jpeg" alt="African landscape" />
+      <figcaption>On a book tour in 2024 at Walter Sisulu University</figcaption>
+    </figure>
+  </div>
+  <div class="img-strip-item">
+    <!-- IMAGE 8: Books/library warm -->
+    <figure>
+      <img src="strip-image-8.jpeg" alt="Books and knowledge" />
+      <figcaption>In Mthontsi mountain/Mt Misery during the shooting of the documentary on Nkosi Maqoma in 2023</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- PARALLAX DIVIDER 1 -->
+<div class="parallax-divider">
+  <div class="parallax-divider-bg" id="divBg1">
+    <img src="WhatsApp Image 2026-03-18 at 09.00.32.jpeg" alt="African landscape" />
+  </div>
+  <div class="parallax-divider-text reveal">
+    <blockquote>In line with Nelson Mandela's motto "it is in your hands" — despite the most challenging circumstances, one remained focused to the possibilities of a better future.</blockquote>
+    <cite>— Memoirs of Relentless Pursuit</cite>
+  </div>
+</div>
+
+<!-- ══════════════════ BOOKS ══════════════════ -->
+<section id="books">
+  <div class="books-parallax-bg"></div>
+  <div class="books-inner">
+    <div class="books-header">
+      <p class="section-label reveal">Literary Works</p>
+      <h2 class="section-title reveal">The Books</h2>
+      <div class="divider-gold reveal"></div>
+      <p class="reveal">Groundbreaking works that reclaim, retell, and redefine African history from the inside out.</p>
+    </div>
+
+    <div class="books-grid">
+      <!-- BOOK 1 -->
+      <div class="book-card reveal">
+        <div class="book-cover">
+          <div class="book-cover-spine"></div>
+          <img src="100 year wars.jpg" alt="Triangle of One Hundred Years Wars" />
+          <div class="book-cover-overlay">
+            <p class="book-year">2023</p>
+            <h3 class="book-cover-title">Triangle of One Hundred Years Wars</h3>
+            <p class="book-cover-author">Dr Jongi Joseph Klaas</p>
+          </div>
+        </div>
+        <div class="book-info">
+          <span class="book-badge">Peer-Reviewed · UJ Press</span>
+          <h3>Triangle of One Hundred Years Wars</h3>
+          <p>A gripping and riveting South African historiography chronologically articulated through an endogenous lens. Chronicles the amaXhosa's visionary leadership through their wars of resistance in the Eastern Cape — regarded as a groundbreaking work in the decolonisation of South African history.</p>
+          <div class="book-links">
+            <a href="https://ujonlinepress.uj.ac.za/index.php/ujp/catalog/book/124" target="_blank" rel="noopener noreferrer" class="book-link">UJ Press →</a>
+            <a href="https://bookshop.org/p/books/triangle-of-one-hundred-years-wars-jj-klaas/8cff219bb068a86c" target="_blank" rel="noopener noreferrer" class="book-link">Bookshop.org →</a>
+            <a href="https://www.researchgate.net/publication/374854798_Triangle_of_One_Hundred_Years_Wars" target="_blank" rel="noopener noreferrer" class="book-link">ResearchGate →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOK 2 -->
+      <div class="book-card reveal">
+        <div class="book-cover">
+          <div class="book-cover-spine spine-accent-red"></div>
+          <img src="memoirs-of-relentless-pursuit.jpg" alt="Memoirs of Relentless Pursuit" />
+          <div class="book-cover-overlay">
+            <p class="book-year">2015</p>
+            <h3 class="book-cover-title">Memoirs of Relentless Pursuit</h3>
+            <p class="book-cover-author">Dr Jongi Joseph Klaas</p>
+          </div>
+        </div>
+        <div class="book-info">
+          <span class="book-badge badge-accent-red">Memoir · Autobiography</span>
+          <h3>Memoirs of Relentless Pursuit</h3>
+          <p>A deeply personal and gripping South African story — from a rural Eastern Cape childhood through poverty, apartheid, and broken homes to a Cambridge doctorate. Raw, honest, and unforgettable. A powerful reminder that despite all odds, a better future is always possible.</p>
+          <div class="book-links">
+            <a href="https://www.abebooks.com/9781482806939/Memoirs-Relentless-Pursuit-Klaas-Jongi-1482806932/plp" target="_blank" rel="noopener noreferrer" class="book-link">AbeBooks →</a>
+            <a href="https://www.goodreads.com/book/show/33369096" target="_blank" rel="noopener noreferrer" class="book-link">Goodreads →</a>
+            <a href="https://books.google.com/books/about/Memoirs_of_Relentless_Pursuit.html?id=L1PisgEACAAJ" target="_blank" rel="noopener noreferrer" class="book-link">Google Books →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PHOTO GALLERY inside books section -->
+    <div class="photo-gallery reveal">
+      <div class="gallery-item tall gallery-item--tall-min">
+        <img src="WhatsApp Image 2026-03-18 at 09.09.13 3.jpeg" alt="Historic manuscripts" />
+        <div class="gallery-caption"></div>
+      </div>
+      <div class="gallery-item gallery-item--h200">
+        <img src="WhatsApp Image 2026-03-18 at 09.12.28.jpeg" alt="Library of knowledge" />
+        <div class="gallery-caption"></div>
+      </div>
+      <div class="gallery-item gallery-item--h200">
+        <img src="WhatsApp Image 2026-03-18 at 09.02.41 1.jpeg" alt="Robben Island" />
+        <div class="gallery-caption"></div>
+      </div>
+    <div class="gallery-item gallery-item--h200">
+      <img src="WhatsApp Image 2026-05-28 at 07.59.32.jpeg" alt="Historic manuscripts" />
+      <div class="gallery-caption">Meeting Nelson Mandela at the University of Cambridge in year 2000</div>
+    </div>
+    <div class="gallery-item gallery-item--h200">
+      <img src="WhatsApp Image 2026-05-28 at 08.04.47.jpeg" alt="Historic manuscripts" />
+      <div class="gallery-caption">In Addis Ababa, Ethiopia in a resort of emperor Haile Selassie</div>
+
+  </div>
+</section>
+
+<!-- PARALLAX DIVIDER 2 -->
+<div class="parallax-divider">
+  <div class="parallax-divider-bg" id="divBg2">
+    <img src="WhatsApp Image 2026-05-16 at 05.00.02.jpeg" alt="Eastern Cape" />
+  </div>
+  <div class="parallax-divider-text reveal">
+    <blockquote>Dr Klaas is a sociologist, historian, and explorer — his research interest anchored on unearthing the forgotten history of South Africa.</blockquote>
+    <cite>— Daily Maverick</cite>
+  </div>
+</div>
+
+<!-- ══════════════════ EVENTS ══════════════════ -->
+<section id="events">
+  <div class="events-parallax-bg"></div>
+  <div class="events-inner">
+    <div class="events-header">
+      <p class="section-label reveal">Appearances &amp; Engagements</p>
+      <h2 class="section-title reveal">Events</h2>
+      <div class="divider-gold reveal"></div>
+      <p class="events-intro reveal">Book launches, lectures, commemorations, and speaking engagements — where history comes alive.</p>
+    </div>
+
+    <!-- IMAGE 9: event/landscape banner -->
+    <div class="events-img-banner reveal">
+      <img src="WhatsApp Image 2026-03-18 at 09.35.08.jpeg" alt="African landscape event" />
+      <div class="events-img-banner-text">
+        <p>"When I wrote about history, more than anything, I wanted it to live — to breathe."</p>
+      </div>
+    </div>
+
+    <div class="events-list">
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">12</div><div class="event-date-month">May 2026</div><div class="event-date-year">Eastern Cape</div></div>
+        <div class="event-details"><p class="event-type">Heritage · Commemoration</p><h3 class="event-name">King Hintsa Historic Commemoration</h3><p class="event-meta">Presented the significance of South Africa's longest African wars of resistance during the King Hintsa commemoration.</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">2025</div><div class="event-date-month">Commemoration</div><div class="event-date-year">Keiskammahoek</div></div>
+        <div class="event-details"><p class="event-type">Heritage · Community</p><h3 class="event-name">75-Year HH Majiza Secondary School Commemoration</h3><p class="event-meta">Led the successful commemoration of HH Majiza Secondary School's 75-year legacy in Keiskammahoek.</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">2024</div><div class="event-date-month">Commemoration</div><div class="event-date-year">Eastern Cape</div></div>
+        <div class="event-details"><p class="event-type">Heritage · Commemoration</p><h3 class="event-name">King Sandile Commemoration</h3><p class="event-meta">Marking the legacy of King Sandile, who fought in three of the longest wars of resistance in Africa.</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">2023</div><div class="event-date-month">Documentary</div><div class="event-date-year">South Africa</div></div>
+        <div class="event-details"><p class="event-type">Film Direction · Cultural Heritage</p><h3 class="event-name">Nkosi Maqoma — 150-Year Commemoration Documentary</h3><p class="event-meta">Directed the first documentary of Nkosi Maqoma, capturing the heritage of resistance.</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">3</div><div class="event-date-month">Nov 2023</div><div class="event-date-year">Grahamstown</div></div>
+        <div class="event-details"><p class="event-type">Book Launch</p><h3 class="event-name">Triangle of One Hundred Years Wars — Official Launch</h3><p class="event-meta">Cawse Library, St Andrew's College, Grahamstown, South Africa</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+      <div class="event-item reveal">
+        <div class="event-date-block"><div class="event-date-day">2016</div><div class="event-date-month">National Tour</div><div class="event-date-year">South Africa</div></div>
+        <div class="event-details"><p class="event-type">Book Tour</p><h3 class="event-name">Memoirs of Relentless Pursuit — South African Book Tour</h3><p class="event-meta">Nationwide tour including television and radio appearances</p></div>
+        <span class="event-status status-past">Past</span>
+      </div>
+    </div>
+
+    <div class="reveal center-cta-wrapper">
+      <p class="cta-text">Interested in booking Dr Klaas for a speaking engagement, lecture, or event?</p>
+      <a href="#contact" class="btn-primary">Book an Appearance</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ CONTACT ══════════════════ -->
+<section id="contact">
+  <div class="contact-parallax-bg"></div>
+  <div class="contact-inner">
+    <div class="contact-header">
+      <p class="section-label reveal">Get in Touch</p>
+      <h2 class="section-title reveal">Contact</h2>
+      <div class="divider-gold reveal"></div>
+      <p class="reveal">For speaking engagements, media enquiries, book orders, and scholarly collaborations.</p>
+    </div>
+    <div class="contact-grid">
+      <!-- Form -->
+      <div class="reveal">
+        <form id="contactForm">
+          <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" placeholder="Your name" required/></div>
+          <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" placeholder="your@email.com" required/></div>
+          <div class="form-group">
+            <label for="subject">Enquiry Type</label>
+            <select id="subject">
+              <option value="">Select...</option>
+              <option>Speaking Engagement / Event</option>
+              <option>Media &amp; Press Enquiry</option>
+              <option>Book Order / Signed Copy</option>
+              <option>Academic Collaboration</option>
+              <option>Documentary / Film</option>
+              <option>General Message</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="message">Message</label><textarea id="message" placeholder="Your message..." required></textarea></div>
+          <button type="submit" class="form-submit">Send Message</button>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <p>Thank you. Your message has been received.<br>Dr Klaas will be in touch shortly.</p>
+        </div>
+      </div>
+      <!-- Info -->
+      <div class="reveal">
+        <h3 class="contact-info-title">Let's Start a Conversation</h3>
+        <p class="contact-info-body">Whether you're a student, educator, journalist, event organiser, or a curious reader — Dr Klaas welcomes meaningful dialogue about history, identity, and the African story.</p>
+        <!-- IMAGE in contact -->
+        <div class="contact-img">
+          <img src="WhatsApp Image 2026-03-18 at 09.34.26.jpeg" alt="Scholarly library" />
+        </div>
+        <div class="contact-details">
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg></div>
+            <div class="contact-detail-text"><strong>Location</strong>South Africa · Eastern Cape</div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div class="contact-detail-text"><strong>Email</strong>Use the contact form for all enquiries</div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 17.93V18a1 1 0 0 0-2 0v1.93A8.001 8.001 0 0 1 4.07 13H6a1 1 0 0 0 0-2H4.07A8.001 8.001 0 0 1 11 4.07V6a1 1 0 0 0 2 0V4.07A8.001 8.001 0 0 1 19.93 11H18a1 1 0 0 0 0 2h1.93A8.001 8.001 0 0 1 13 19.93z"/></svg></div>
+            <div class="contact-detail-text"><strong>Books Available</strong>Bookshop.org · AbeBooks · UJ Press · Google Books</div>
+          </div>
+        </div>
+        <div class="social-links">
+          <a href="https://www.goodreads.com/book/show/33369096" target="_blank" rel="noopener noreferrer" class="social-link" title="Goodreads">GR</a>
+          <a href="https://www.researchgate.net/publication/374854798_Triangle_of_One_Hundred_Years_Wars" target="_blank" rel="noopener noreferrer" class="social-link" title="ResearchGate">RG</a>
+          <a href="https://www.dailymaverick.co.za/opinionista/2025-06-05-rectifying-the-false-colonial-narrative-of-nongqawuse/" target="_blank" rel="noopener noreferrer" class="social-link" title="Daily Maverick">DM</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Dr Jongi Klaas</span>
+  <div class="footer-credit">
+    <p class="footer-muted">Sociologist · Historian · Explorer</p>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Dr Jongi Joseph Klaas. All rights reserved.</p>
+    <p class="footer-bottom-credit">Website by <a href="https://www.mvm-enterprise.co.za" target="_blank" rel="noopener noreferrer">LoQ Media</a></p>
+  </div>
+</footer>
+
+<script>
+  // CURSOR
+  const dot = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animCursor(){
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+    ring.style.left=rx+'px';ring.style.top=ry+'px';
+    requestAnimationFrame(animCursor);
+  })();
+  document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ring.style.width='54px';ring.style.height='54px';});
+    el.addEventListener('mouseleave',()=>{ring.style.width='36px';ring.style.height='36px';});
+  });
+
+  // NAVBAR SCROLL
+  const navbar=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>{navbar.classList.toggle('scrolled',window.scrollY>60);},{passive:true});
+
+  // PARALLAX
+  const heroBg=document.getElementById('heroBg');
+  const divBg1=document.getElementById('divBg1');
+  const divBg2=document.getElementById('divBg2');
+  window.addEventListener('scroll',()=>{
+    if(heroBg) heroBg.style.transform=`translateY(${window.scrollY*.38}px)`;
+    [divBg1,divBg2].forEach(el=>{
+      if(!el) return;
+      const rect=el.parentElement.getBoundingClientRect();
+      const offset=(window.innerHeight/2-(rect.top+rect.height/2))*.22;
+      el.style.transform=`translateY(${offset}px)`;
+    });
+  },{passive:true});
+
+  // REVEAL ON SCROLL
+  const reveals=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),80);obs.unobserve(e.target);}});
+  },{threshold:.1});
+  reveals.forEach(el=>obs.observe(el));
+
+  // STAGGER credentials + events
+  document.querySelectorAll('.about-credentials .credential').forEach((c,i)=>c.style.transitionDelay=(i*.1)+'s');
+  document.querySelectorAll('.events-list .event-item').forEach((c,i)=>c.style.transitionDelay=(i*.08)+'s');
+
+  // MOBILE MENU
+  document.getElementById('menuBtn').addEventListener('click',()=>document.getElementById('mobileMenu').classList.add('open'));
+  document.getElementById('menuClose').addEventListener('click',()=>document.getElementById('mobileMenu').classList.remove('open'));
+  document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>document.getElementById('mobileMenu').classList.remove('open')));
+
+  // CONTACT FORM
+  document.getElementById('contactForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    this.style.display='none';
+    document.getElementById('formSuccess').style.display='block';
+  });
+
+  // ACTIVE NAV
+  const sections=document.querySelectorAll('section[id]');
+  const navLinks=document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    sections.forEach(s=>{if(window.scrollY>=s.offsetTop-130)cur=s.id;});
+    navLinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+cur?'var(--gold)':'';});
+  },{passive:true});
+</script>
+</body>
+</html>
